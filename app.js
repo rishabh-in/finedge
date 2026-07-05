@@ -4,6 +4,7 @@ const healthRoutes = require('./routes/health.routes');
 const summaryRoutes = require('./routes/summary.routes');
 const transactionRoutes = require('./routes/transaction.routes');
 const userRoutes = require('./routes/user.routes');
+const cors = require('./middleware/cors');
 const errorHandler = require('./middleware/errorHandler');
 const logger = require('./middleware/logger');
 const notFound = require('./middleware/notFound');
@@ -12,6 +13,7 @@ const rateLimiter = require('./middleware/rateLimiter');
 const app = express();
 
 app.use(express.json());
+app.use(cors);
 app.use(logger);
 app.use(rateLimiter);
 
