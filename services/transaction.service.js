@@ -38,10 +38,11 @@ const applyFilters = (transactions, filters = {}) => {
   });
 };
 
-const createTransaction = async (payload) => {
+const createTransaction = async (payload, userId) => {
   const transaction = {
     id: randomUUID(),
     ...normalizeTransaction(payload),
+    userId,
     description: payload.description || '',
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
@@ -58,20 +59,21 @@ const getTransactions = async (filters) => {
   return applyFilters(transactions, filters);
 };
 
-const getTransactionById = async (id) => {
+const getTransactionById = async (id, userId) => {
   const transaction = await store.findById('transactions', id);
 
-  if (!transaction) {
+  if (!transaction || (userId && transaction.userId !== userId)) {
     throw new AppError('Transaction not found.', 404);
   }
 
   return transaction;
 };
 
-const updateTransaction = async (id, payload) => {
-  const transaction = await getTransactionById(id);
+const updateTransaction = async (id, payload, userId) => {
+  const transaction = await getTransactionById(id, userId);
   const updatedTransaction = {
     ...normalizeTransaction(payload, transaction),
+    userId: transaction.userId,
     updatedAt: new Date().toISOString(),
   };
 
@@ -81,8 +83,8 @@ const updateTransaction = async (id, payload) => {
   return updatedTransaction;
 };
 
-const deleteTransaction = async (id) => {
-  await getTransactionById(id);
+const deleteTransaction = async (id, userId) => {
+  await getTransactionById(id, userId);
   await store.deleteById('transactions', id);
   cache.del('summary:');
 };

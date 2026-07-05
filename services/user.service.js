@@ -33,6 +33,17 @@ const createUser = async (payload) => {
   };
 };
 
+const getUserById = async (id) => {
+  const user = await store.findById('users', id);
+
+  if (!user) {
+    throw new AppError('User not found.', 404);
+  }
+
+  return user;
+};
+
 module.exports = {
   createUser,
+  getUserById,
 };
