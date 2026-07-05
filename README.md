@@ -6,6 +6,8 @@ FinEdge is a JavaScript Node.js and Express REST API for tracking users, transac
 
 - User registration with preferences
 - Mock JWT token returned during user registration
+- Bearer token authentication for finance routes
+- User-scoped transactions, budgets, and summaries
 - CRUD APIs for income and expense transactions
 - Budget creation and listing
 - Summary API with total income, total expenses, balance, transaction count, and monthly trends
@@ -82,6 +84,7 @@ GET /health
 
 ```http
 POST /users
+GET /users/me
 ```
 
 Example body:
@@ -96,7 +99,15 @@ Example body:
 }
 ```
 
+`POST /users` returns a mock JWT token. Use it for protected endpoints:
+
+```http
+Authorization: Bearer <token>
+```
+
 ### Transactions
+
+Requires `Authorization: Bearer <token>`.
 
 ```http
 POST /transactions
@@ -126,6 +137,8 @@ GET /transactions?category=groceries&type=expense&from=2026-07-01&to=2026-07-31
 
 ### Summary
 
+Requires `Authorization: Bearer <token>`.
+
 ```http
 GET /summary
 ```
@@ -137,6 +150,8 @@ GET /summary?category=rent&from=2026-07-01&to=2026-07-31
 ```
 
 ### Budgets
+
+Requires `Authorization: Bearer <token>`.
 
 ```http
 POST /budgets
